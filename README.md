@@ -89,6 +89,12 @@ Edit `~/.claude/hooks/peon-ping/config.json`:
 
 ### 🎮 StarCraft Terran Units (New!)
 
+| Pack | Description | Sounds | By |
+|---|---|---|---|
+| `sc_terran` ⭐ | **All Terran Units Mixed** | All 5 units randomly mixed - SCV, Firebat, Medic, Siege Tank, Science Vessel | [@workdd](https://github.com/workdd) |
+
+**Individual Units** (if you prefer a specific unit):
+
 | Pack | Unit | Sounds | By |
 |---|---|---|---|
 | `sc_scv` | SCV | "Good to go, sir", "Affirmative", "I read you" | [@workdd](https://github.com/workdd) |
