@@ -20,7 +20,10 @@ teardown() {
 # Copilot passes event name as $1 and JSON on stdin
 run_copilot() {
   local event="$1"
-  local json="${2:-{}}"
+  # Note: avoid ${2:-{}} — bash closes the expansion at the first }, leaving a
+  # trailing literal } that makes the JSON malformed and causes jq to exit 5.
+  local json="${2-}"
+  if [ -z "$json" ]; then json="{}"; fi
   export PEON_TEST=1
   echo "$json" | bash "$COPILOT_SH" "$event" 2>"$TEST_DIR/stderr.log"
   COPILOT_EXIT=$?
@@ -111,7 +114,8 @@ run_copilot() {
 # ============================================================
 
 @test "extracts sessionId from JSON input" {
-  run_copilot sessionStart '{"sessionId":"custom-session-id","cwd":"/tmp"}'
+  # Use userPromptSubmitted — it creates the session marker file keyed by session ID
+  run_copilot userPromptSubmitted '{"sessionId":"custom-session-id","cwd":"/tmp"}'
   [ "$COPILOT_EXIT" -eq 0 ]
   # Session marker file should use the custom session ID
   [ -f "$TEST_DIR/.copilot-session-custom-session-id" ]
