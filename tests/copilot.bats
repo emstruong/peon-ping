@@ -61,7 +61,7 @@ run_copilot() {
   [[ "$sound" == *"/packs/peon/sounds/Done"* ]]
 }
 
-@test "errorOccurred maps to TaskError and plays error sound" {
+@test "errorOccurred maps to PostToolUseFailure and plays error sound" {
   run_copilot errorOccurred '{"sessionId":"test-123","cwd":"/tmp"}'
   [ "$COPILOT_EXIT" -eq 0 ]
   afplay_was_called

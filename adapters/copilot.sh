@@ -67,7 +67,7 @@ case "$COPILOT_EVENT" in
     ;;
   errorOccurred)
     # Error occurred during session
-    EVENT="TaskError"
+    EVENT="PostToolUseFailure"
     ;;
   *)
     # Unknown event — skip
@@ -75,6 +75,13 @@ case "$COPILOT_EVENT" in
     ;;
 esac
 
-echo "$INPUT" | jq --arg event "$EVENT" --arg sid "$SESSION_ID" --arg cwd "$CWD" \
-  '{hook_event_name: $event, notification_type: "", cwd: $cwd, session_id: $sid, permission_mode: ""}' \
-  | bash "$PEON_DIR/peon.sh"
+# PostToolUseFailure requires tool_name and error fields to trigger a sound
+if [ "$EVENT" = "PostToolUseFailure" ]; then
+  echo "$INPUT" | jq --arg event "$EVENT" --arg sid "$SESSION_ID" --arg cwd "$CWD" \
+    '{hook_event_name: $event, notification_type: "", cwd: $cwd, session_id: $sid, permission_mode: "", tool_name: "Bash", error: "errorOccurred"}' \
+    | bash "$PEON_DIR/peon.sh"
+else
+  echo "$INPUT" | jq --arg event "$EVENT" --arg sid "$SESSION_ID" --arg cwd "$CWD" \
+    '{hook_event_name: $event, notification_type: "", cwd: $cwd, session_id: $sid, permission_mode: ""}' \
+    | bash "$PEON_DIR/peon.sh"
+fi
